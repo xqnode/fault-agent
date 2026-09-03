@@ -1,0 +1,223 @@
+/* pure-admin-thin inspired theme (UI only, no scaffold deps)
+ * ref: https://github.com/pure-admin/pure-admin-thin
+ */
+
+:root,
+html[data-theme='default'] {
+  --pure-bg: #f0f2f5;
+  --pure-theme-sub-menu-active-text: #fff;
+  --pure-theme-menu-bg: #001529;
+  --pure-theme-menu-hover: rgb(64 145 247 / 15%);
+  --pure-theme-sub-menu-bg: #0f0303;
+  --pure-theme-menu-text: rgb(254 254 254 / 65%);
+  --pure-theme-sidebar-logo: #002140;
+  --pure-theme-menu-title-hover: #fff;
+  --pure-theme-menu-active-before: #4091f7;
+
+  --el-color-primary: #409eff;
+  --bg: var(--pure-bg);
+  --panel: #ffffff;
+  --ink: #303133;
+  --muted: #909399;
+  --line: #e4e7ed;
+  --steel: #409eff;
+  --steel-deep: #337ecc;
+  --amber: #e6a23c;
+  --amber-soft: #fdf6ec;
+  --ok: #67c23a;
+  --danger: #f56c6c;
+  --warn: #e6a23c;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --sans:
+    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  --radius: 4px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  --page-pad: 0;
+  --content-max: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--pure-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizelegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--content-max);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  overflow: hidden;
+}
+
+.panel-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.panel-hd h2,
+.panel-hd h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.panel-bd {
+  padding: 16px;
+}
+
+.panel-bd :deep(.el-table) {
+  --el-table-border-color: var(--line);
+  --el-table-header-bg-color: #fafafa;
+  width: 100% !important;
+}
+
+.panel-bd :deep(.el-table__inner-wrapper::before),
+.panel-bd :deep(.el-table__border-left-patch) {
+  display: none;
+}
+
+.panel-bd.table-flush {
+  padding: 0;
+}
+
+.panel-bd.table-flush :deep(.el-table) {
+  border-radius: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.search-ico {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.pager {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-RUNNING {
+  color: #67c23a;
+  background: #f0f9eb;
+  border-color: #e1f3d8;
+}
+
+.status-WARNING {
+  color: #e6a23c;
+  background: #fdf6ec;
+  border-color: #faecd8;
+}
+
+.status-FAULT,
+.status-CRITICAL,
+.status-HIGH,
+.status-FAILED {
+  color: #f56c6c;
+  background: #fef0f0;
+  border-color: #fde2e2;
+}
+
+.status-PENDING,
+.status-STOPPED,
+.status-MEDIUM,
+.status-ANALYZING,
+.status-ANALYZED {
+  color: #409eff;
+  background: #ecf5ff;
+  border-color: #d9ecff;
+}
+
+.status-RESOLVED,
+.status-LOW {
+  color: #909399;
+  background: #f4f4f5;
+  border-color: #e9e9eb;
+}
+
+/* Element Plus light tweaks (subset of pure-admin) */
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
+}
+
+@media (max-width: 900px) {
+  .panel-bd {
+    padding: 12px;
+  }
+}
