@@ -59,11 +59,13 @@
 </template>
 
 <script setup>
-import { api } from '@/api/client'
 import { getUser, logoutAndRedirect } from '@/utils/auth'
+import { getErrorMessage } from '@/utils/error'
+import { labelRole } from '@/utils/labels'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { computed, ref } from 'vue'
+import { api } from '@/api/client'
 
 const route = useRoute()
 const router = useRouter()
@@ -75,12 +77,7 @@ const displayName = computed(() => {
   return user?.nickname || user?.username || '用户'
 })
 
-const roleLabel = computed(() => {
-  const role = getUser()?.role
-  if (role === 'ADMIN') return '管理员'
-  if (role === 'ENGINEER') return '运维工程师'
-  return role || '-'
-})
+const roleLabel = computed(() => labelRole(getUser()?.role))
 
 const menus = [
   { path: '/', title: '总览', icon: '▣', match: ['dashboard'] },
@@ -116,7 +113,7 @@ async function onInject() {
     const data = await api.injectScenario()
     ElMessage.success(`已注入剧本，报警 #${data.alarm_id}`)
   } catch (e) {
-    ElMessage.error(e.response?.data?.detail || e.message || '注入失败')
+    ElMessage.error(getErrorMessage(e, '注入失败'))
   } finally {
     busy.value = false
   }
@@ -128,7 +125,7 @@ async function onReset() {
     await api.resetSimulator()
     ElMessage.success('模拟器已重置')
   } catch (e) {
-    ElMessage.error(e.response?.data?.detail || e.message || '重置失败')
+    ElMessage.error(getErrorMessage(e, '重置失败'))
   } finally {
     busy.value = false
   }

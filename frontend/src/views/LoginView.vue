@@ -88,6 +88,7 @@ import { ElMessage } from 'element-plus'
 import { Lock, User } from '@element-plus/icons-vue'
 import { api } from '@/api/client'
 import { setAuth } from '@/utils/auth'
+import { getErrorMessage } from '@/utils/error'
 
 const router = useRouter()
 const route = useRoute()
@@ -132,7 +133,7 @@ async function onSubmit() {
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
     await router.replace(redirect || '/')
   } catch (e) {
-    ElMessage.error(e?.message || '登录失败')
+    ElMessage.error(getErrorMessage(e, '登录失败'))
   } finally {
     loading.value = false
   }

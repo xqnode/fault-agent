@@ -27,18 +27,64 @@ export const ALARM_TYPE_LABEL = {
   POWER_HIGH: '功率过高',
 }
 
+export const METRIC_LABEL = {
+  temperature: '温度',
+  pressure: '压力',
+  vibration: '振动',
+  power: '功率',
+}
+
+export const METRIC_UNIT = {
+  temperature: '℃',
+  pressure: 'MPa',
+  vibration: 'mm/s',
+  power: 'kW',
+}
+
+export const ROLE_LABEL = {
+  ADMIN: '管理员',
+  ENGINEER: '运维工程师',
+}
+
+export const DEVICE_STATUS_OPTIONS = Object.entries(DEVICE_STATUS_LABEL).map(([value, label]) => ({
+  value,
+  label,
+}))
+
+export const ALARM_STATUS_OPTIONS = Object.entries(ALARM_STATUS_LABEL).map(([value, label]) => ({
+  value,
+  label,
+}))
+
+function pickLabel(map, v, fallback = '-') {
+  if (v == null || v === '') return fallback
+  return map[v] || v || fallback
+}
+
 export function labelDeviceStatus(v) {
-  return DEVICE_STATUS_LABEL[v] || v || '-'
+  return pickLabel(DEVICE_STATUS_LABEL, v)
 }
 
 export function labelAlarmStatus(v) {
-  return ALARM_STATUS_LABEL[v] || v || '-'
+  return pickLabel(ALARM_STATUS_LABEL, v)
 }
 
 export function labelAlarmLevel(v) {
-  return ALARM_LEVEL_LABEL[v] || v || '-'
+  return pickLabel(ALARM_LEVEL_LABEL, v)
 }
 
 export function labelAlarmType(v) {
-  return ALARM_TYPE_LABEL[v] || v || '-'
+  return pickLabel(ALARM_TYPE_LABEL, v)
+}
+
+export function labelRole(v) {
+  return pickLabel(ROLE_LABEL, v)
+}
+
+export function labelMetric(v) {
+  return pickLabel(METRIC_LABEL, v)
+}
+
+export function metricUnit(v) {
+  return METRIC_UNIT[v] || ''
 }

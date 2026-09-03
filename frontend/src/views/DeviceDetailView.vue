@@ -6,7 +6,7 @@
           <h2>{{ device.device_code }} · {{ device.device_name }}</h2>
           <div class="muted">{{ device.location }} · {{ device.device_type }}</div>
         </div>
-        <span class="status-pill" :class="'status-' + device.status">{{ labelDeviceStatus(device.status) }}</span>
+        <StatusPill :value="device.status" type="device" />
       </div>
       <div class="panel-bd meta">
         <div><span class="muted">设备 ID</span><div class="mono">{{ device.id }}</div></div>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -45,7 +45,9 @@ import { LineChart } from 'echarts/charts'
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { api } from '@/api/client'
-import { labelDeviceStatus } from '@/utils/labels'
+import StatusPill from '@/components/StatusPill.vue'
+import { usePolling } from '@/composables/usePolling'
+import { formatClockTime, formatTime } from '@/utils/datetime'
 
 use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, LegendComponent])
 
@@ -53,7 +55,6 @@ const route = useRoute()
 const device = ref(null)
 const points = ref([])
 const loading = ref(false)
-let timer
 
 const chartOption = computed(() => ({
   color: ['#c47b16', '#2f5d8a', '#2f7d4a', '#7a5af8'],
@@ -62,7 +63,7 @@ const chartOption = computed(() => ({
   grid: { left: 45, right: 20, top: 40, bottom: 30 },
   xAxis: {
     type: 'category',
-    data: points.value.map((p) => new Date(p.record_time).toLocaleTimeString()),
+    data: points.value.map((p) => formatClockTime(p.record_time)),
   },
   yAxis: { type: 'value', scale: true },
   series: [
@@ -72,10 +73,6 @@ const chartOption = computed(() => ({
     { name: '振动', type: 'line', showSymbol: false, data: points.value.map((p) => p.vibration) },
   ],
 }))
-
-function formatTime(v) {
-  return v ? new Date(v).toLocaleString() : '-'
-}
 
 async function load() {
   loading.value = true
@@ -90,15 +87,7 @@ async function load() {
 }
 
 watch(() => route.params.id, load)
-
-onMounted(async () => {
-  await load()
-  timer = setInterval(load, 8000)
-})
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
+usePolling(load)
 </script>
 
 <style scoped>

@@ -56,16 +56,12 @@
           </el-table-column>
           <el-table-column label="等级" width="90">
             <template #default="{ row }">
-              <span class="status-pill" :class="'status-' + row.alarm_level">
-                {{ labelAlarmLevel(row.alarm_level) }}
-              </span>
+              <StatusPill :value="row.alarm_level" type="level" />
             </template>
           </el-table-column>
           <el-table-column label="状态" width="100">
             <template #default="{ row }">
-              <span class="status-pill" :class="'status-' + row.status">
-                {{ labelAlarmStatus(row.status) }}
-              </span>
+              <StatusPill :value="row.status" type="alarm" />
             </template>
           </el-table-column>
           <el-table-column label="实测/阈值" min-width="120">
@@ -88,19 +84,17 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart, PieChart } from 'echarts/charts'
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { api } from '@/api/client'
-import {
-  labelAlarmLevel,
-  labelAlarmStatus,
-  labelAlarmType,
-  labelDeviceStatus,
-} from '@/utils/labels'
+import StatusPill from '@/components/StatusPill.vue'
+import { usePolling } from '@/composables/usePolling'
+import { formatClockTime, formatTime } from '@/utils/datetime'
+import { labelAlarmType, labelDeviceStatus } from '@/utils/labels'
 
 use([CanvasRenderer, LineChart, PieChart, GridComponent, TooltipComponent, LegendComponent])
 
@@ -115,7 +109,6 @@ const overview = ref({
   status_distribution: [],
 })
 const refreshedAt = ref('-')
-let timer
 
 const trendOption = computed(() => ({
   color: ['#409eff'],
@@ -172,28 +165,16 @@ const pieOption = computed(() => {
   }
 })
 
-function formatTime(v) {
-  if (!v) return '-'
-  return new Date(v).toLocaleString()
-}
-
 async function load() {
   try {
     overview.value = await api.getOverview()
-    refreshedAt.value = new Date().toLocaleTimeString()
+    refreshedAt.value = formatClockTime(new Date())
   } catch {
     // keep last good snapshot on poll failure
   }
 }
 
-onMounted(async () => {
-  await load()
-  timer = setInterval(load, 8000)
-})
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
+usePolling(load)
 </script>
 
 <style scoped>
